@@ -1,5 +1,6 @@
 [package]
 name = "mathdocs_cli"
+description = "Render Python math metadata as Markdown and LaTeX."
 edition.workspace = true
 license.workspace = true
 repository.workspace = true

@@ -1,13 +1,20 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from importlib.metadata import PackageNotFoundError, version
 from typing import Any, Callable
+
+try:
+    __version__ = version("mathdocs")
+except PackageNotFoundError:
+    __version__ = "0.0.0+unknown"
 
 __all__ = [
     "Image",
     "RenderTemplate",
     "Symbol",
     "Tensor",
+    "__version__",
     "render_as",
     "render_figure",
     "render_image",
@@ -45,6 +52,8 @@ class Image:
 
 
 def render_as(**formats: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    # Kwargs are intentionally discarded at runtime; the renderer reads them
+    # statically from the source AST.
     def deco(fn: Callable[..., Any]) -> Callable[..., Any]:
         return fn
 

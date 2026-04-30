@@ -10,6 +10,7 @@
 *.egg-info/
 /build/
 /dist/
+/python/dist/
 /.pytest_cache/
 /.ruff_cache/
 /.mypy_cache/
@@ -18,6 +19,7 @@
 # Node / VS Code extension
 /editors/vscode/node_modules/
 /editors/vscode/dist/
+/editors/vscode/bin/
 *.vsix
 
 # Generated examples

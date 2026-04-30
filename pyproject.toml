@@ -1,2 +1,39 @@
-[tool.uv.workspace]
-members = ["python"]
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "mathdocs"
+version = "0.1.0"
+description = "Render Python source files as Markdown with inline LaTeX math."
+readme = "python/README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Brad Ofrim" }]
+keywords = ["documentation", "markdown", "latex", "math", "rendering"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Documentation",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/bofrim/mathdocs"
+Repository = "https://github.com/bofrim/mathdocs"
+Issues = "https://github.com/bofrim/mathdocs/issues"
+
+[tool.maturin]
+bindings = "bin"
+manifest-path = "crates/mathdocs_cli/Cargo.toml"
+python-source = "python"
+module-name = "mathdocs"
+strip = true

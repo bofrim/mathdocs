@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bradofrim/mathdocs.git",
+    "url": "https://github.com/bofrim/mathdocs.git",
     "directory": "editors/vscode"
   },
   "engines": {

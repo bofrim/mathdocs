@@ -13,7 +13,7 @@ resolver = "2"
 [workspace.package]
 edition = "2021"
 license = "MIT"
-repository = "https://example.invalid/mathdocs"
+repository = "https://github.com/bofrim/mathdocs"
 version = "0.1.0"
 
 [workspace.dependencies]

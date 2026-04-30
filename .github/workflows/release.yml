@@ -1,0 +1,172 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  wheels:
+    name: wheel ${{ matrix.target }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            runner: ubuntu-latest
+            manylinux: "2014"
+          - target: aarch64-unknown-linux-gnu
+            runner: ubuntu-latest
+            manylinux: "2014"
+          - target: x86_64-apple-darwin
+            runner: macos-13
+          - target: aarch64-apple-darwin
+            runner: macos-latest
+          - target: x86_64-pc-windows-msvc
+            runner: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: build
+          target: ${{ matrix.target }}
+          args: --release --out dist
+          manylinux: ${{ matrix.manylinux || 'auto' }}
+          rust-toolchain: stable
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.target }}
+          path: dist/*.whl
+          if-no-files-found: error
+
+  sdist:
+    name: sdist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-sdist
+          path: dist/*.tar.gz
+          if-no-files-found: error
+
+  publish-pypi:
+    name: publish to PyPI
+    needs: [wheels, sdist]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          merge-multiple: true
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
+
+  vsix:
+    name: vsix ${{ matrix.vsce-target }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rust-target: x86_64-unknown-linux-gnu
+            vsce-target: linux-x64
+            runner: ubuntu-latest
+            exe: mathdocs-lsp
+          - rust-target: aarch64-unknown-linux-gnu
+            vsce-target: linux-arm64
+            runner: ubuntu-latest
+            exe: mathdocs-lsp
+            cross: true
+          - rust-target: x86_64-apple-darwin
+            vsce-target: darwin-x64
+            runner: macos-13
+            exe: mathdocs-lsp
+          - rust-target: aarch64-apple-darwin
+            vsce-target: darwin-arm64
+            runner: macos-latest
+            exe: mathdocs-lsp
+          - rust-target: x86_64-pc-windows-msvc
+            vsce-target: win32-x64
+            runner: windows-latest
+            exe: mathdocs-lsp.exe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-target }}
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cross-compile deps (linux-arm64)
+        if: matrix.cross
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+          mkdir -p .cargo
+          cat >> .cargo/config.toml <<EOF
+          [target.aarch64-unknown-linux-gnu]
+          linker = "aarch64-linux-gnu-gcc"
+          EOF
+      - run: cargo build --release -p mathdocs_lsp --target ${{ matrix.rust-target }}
+      - name: Stage binary into extension bin/
+        shell: bash
+        run: |
+          mkdir -p editors/vscode/bin
+          cp target/${{ matrix.rust-target }}/release/${{ matrix.exe }} editors/vscode/bin/${{ matrix.exe }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+        working-directory: editors/vscode
+      - run: npm run compile
+        working-directory: editors/vscode
+      - name: Package vsix
+        shell: bash
+        run: |
+          mkdir -p dist-vsix
+          cd editors/vscode
+          npx --yes @vscode/vsce package \
+            --target ${{ matrix.vsce-target }} \
+            -o ../../dist-vsix/mathdocs-vscode-${{ matrix.vsce-target }}.vsix
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vsix-${{ matrix.vsce-target }}
+          path: dist-vsix/*.vsix
+          if-no-files-found: error
+
+  github-release:
+    name: attach artifacts to GitHub Release
+    needs: [wheels, sdist, vsix]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: vsix-*
+          merge-multiple: true
+          path: release-assets
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          merge-multiple: true
+          path: release-assets
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/*
+          generate_release_notes: true
+          fail_on_unmatched_files: true

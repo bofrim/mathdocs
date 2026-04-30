@@ -89,7 +89,7 @@ export async function activate(context: vscode.ExtensionContext) {
   client = new LanguageClient(
     'mathdocs',
     'MathDocs',
-    serverOptions(),
+    serverOptions(context),
     clientOptions()
   );
   context.subscriptions.push(client);
@@ -153,12 +153,17 @@ export async function deactivate(): Promise<void> {
   await client?.stop();
 }
 
-function serverOptions(): ServerOptions {
+function serverOptions(context: vscode.ExtensionContext): ServerOptions {
+  const exeName = process.platform === 'win32' ? 'mathdocs-lsp.exe' : 'mathdocs-lsp';
   const configured = vscode.workspace.getConfiguration('mathdocs').get<string>('serverPath');
   const workspaceBinary = vscode.workspace.workspaceFolders?.[0]
-    ? path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'target', 'debug', process.platform === 'win32' ? 'mathdocs-lsp.exe' : 'mathdocs-lsp')
+    ? path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'target', 'debug', exeName)
     : '';
-  const command = configured || (workspaceBinary && fs.existsSync(workspaceBinary) ? workspaceBinary : 'mathdocs-lsp');
+  const bundledBinary = path.join(context.extensionPath, 'bin', exeName);
+  const command = configured
+    || (workspaceBinary && fs.existsSync(workspaceBinary) ? workspaceBinary
+    : (fs.existsSync(bundledBinary) ? bundledBinary
+    : 'mathdocs-lsp'));
   return {
     run: { command, transport: TransportKind.stdio },
     debug: { command, transport: TransportKind.stdio }
