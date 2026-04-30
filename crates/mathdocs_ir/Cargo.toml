@@ -1,0 +1,11 @@
+[package]
+name = "mathdocs_ir"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+mathdocs_ast = { path = "../mathdocs_ast" }
+mathdocs_metadata = { path = "../mathdocs_metadata" }
+serde.workspace = true

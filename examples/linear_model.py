@@ -2,7 +2,7 @@
 from typing import Annotated
 
 import numpy as np
-from mathrender import Symbol, Tensor, render_as
+from mathdocs import Symbol, Tensor, render_as
 
 """
 # Linear model

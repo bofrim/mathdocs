@@ -1,10 +1,10 @@
 # pyright: reportUnboundVariable=false
-# mathrender: off
+# mathdocs: off
 from __future__ import annotations
 
 from pathlib import Path
 
-from mathrender import render_figure
+from mathdocs import render_figure
 
 OUTPUT_PATH = Path(__file__).with_name("artifacts") / "training_loss.svg"
 
@@ -49,13 +49,13 @@ def build_loss_plot(path: Path) -> None:
 
 
 build_loss_plot(OUTPUT_PATH)
-# mathrender: on
+# mathdocs: on
 
 """
 # Generated Plot
 
 This example writes a plot image from ordinary Python code, then uses a
-MathRender directive to place that generated artifact in the rendered document.
+MathDocs directive to place that generated artifact in the rendered document.
 """
 
 render_figure(
@@ -66,3 +66,5 @@ render_figure(
 
 
 final_loss = 0.18
+
+print(final_loss)

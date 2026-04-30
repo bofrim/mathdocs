@@ -72,14 +72,14 @@ interface MarkdownStringFoldArg {
   uri: string;
 }
 
-interface InlineMathRenderMetrics {
+interface InlineMathDocsMetrics {
   fontSize: number;
   scale: number;
   widthPerCharacter: number;
   translateY: number;
 }
 
-interface HoverMathRenderMetrics {
+interface HoverMathDocsMetrics {
   width: number;
   height: number;
   fontSize: number;
@@ -87,8 +87,8 @@ interface HoverMathRenderMetrics {
 
 export async function activate(context: vscode.ExtensionContext) {
   client = new LanguageClient(
-    'mathrender',
-    'MathRender',
+    'mathdocs',
+    'MathDocs',
     serverOptions(),
     clientOptions()
   );
@@ -96,16 +96,16 @@ export async function activate(context: vscode.ExtensionContext) {
   await client.start();
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('mathrender.previewDocument', previewDocument),
-    vscode.commands.registerCommand('mathrender.previewCurrentFile', previewCurrentFile),
-    vscode.commands.registerCommand('mathrender.previewSelection', previewSelection),
-    vscode.commands.registerCommand('mathrender.previewRange', previewRange),
-    vscode.commands.registerCommand('mathrender.toggleInlineRender', toggleInlineRender),
-    vscode.commands.registerCommand('mathrender.inlineRenderSpacer', () => undefined),
-    vscode.commands.registerCommand('mathrender.collapseMarkdownString', collapseMarkdownString),
-    vscode.commands.registerCommand('mathrender.expandMarkdownString', expandMarkdownString),
+    vscode.commands.registerCommand('mathdocs.previewDocument', previewDocument),
+    vscode.commands.registerCommand('mathdocs.previewCurrentFile', previewCurrentFile),
+    vscode.commands.registerCommand('mathdocs.previewSelection', previewSelection),
+    vscode.commands.registerCommand('mathdocs.previewRange', previewRange),
+    vscode.commands.registerCommand('mathdocs.toggleInlineRender', toggleInlineRender),
+    vscode.commands.registerCommand('mathdocs.inlineRenderSpacer', () => undefined),
+    vscode.commands.registerCommand('mathdocs.collapseMarkdownString', collapseMarkdownString),
+    vscode.commands.registerCommand('mathdocs.expandMarkdownString', expandMarkdownString),
     vscode.workspace.onDidChangeConfiguration((event) => {
-      if (!event.affectsConfiguration('mathrender.inlineRender.enabled')) {
+      if (!event.affectsConfiguration('mathdocs.inlineRender.enabled')) {
         return;
       }
       refreshCodeLenses();
@@ -130,7 +130,7 @@ export async function activate(context: vscode.ExtensionContext) {
     ),
     vscode.languages.registerHoverProvider(
       { scheme: 'file', language: 'python' },
-      new MathRenderHoverProvider()
+      new MathDocsHoverProvider()
     ),
     vscode.languages.registerCompletionItemProvider(
       { scheme: 'file', language: 'python' },
@@ -154,11 +154,11 @@ export async function deactivate(): Promise<void> {
 }
 
 function serverOptions(): ServerOptions {
-  const configured = vscode.workspace.getConfiguration('mathrender').get<string>('serverPath');
+  const configured = vscode.workspace.getConfiguration('mathdocs').get<string>('serverPath');
   const workspaceBinary = vscode.workspace.workspaceFolders?.[0]
-    ? path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'target', 'debug', process.platform === 'win32' ? 'mathrender-lsp.exe' : 'mathrender-lsp')
+    ? path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'target', 'debug', process.platform === 'win32' ? 'mathdocs-lsp.exe' : 'mathdocs-lsp')
     : '';
-  const command = configured || (workspaceBinary && fs.existsSync(workspaceBinary) ? workspaceBinary : 'mathrender-lsp');
+  const command = configured || (workspaceBinary && fs.existsSync(workspaceBinary) ? workspaceBinary : 'mathdocs-lsp');
   return {
     run: { command, transport: TransportKind.stdio },
     debug: { command, transport: TransportKind.stdio }
@@ -169,7 +169,7 @@ function clientOptions(): LanguageClientOptions {
   return {
     documentSelector: [{ scheme: 'file', language: 'python' }],
     synchronize: {
-      fileEvents: vscode.workspace.createFileSystemWatcher('**/*.{py,pyi,mathrender.toml}')
+      fileEvents: vscode.workspace.createFileSystemWatcher('**/*.{py,pyi,mathdocs.toml}')
     },
     middleware: {
       provideCodeLenses: async (document, token, next) => {
@@ -226,21 +226,21 @@ async function previewRange(arg?: PreviewRangeArg) {
     textDocument: { uri: arg.uri },
     range: arg.range
   });
-  showPreview('MathRender preview', result.markdown);
+  showPreview('MathDocs preview', result.markdown);
 }
 
 async function toggleInlineRender() {
-  const configuration = vscode.workspace.getConfiguration('mathrender.inlineRender');
+  const configuration = vscode.workspace.getConfiguration('mathdocs.inlineRender');
   const enabled = configuration.get<boolean>('enabled', false);
   await configuration.update('enabled', !enabled, vscode.ConfigurationTarget.Global);
 }
 
 function isInlineRenderEnabled(): boolean {
-  return vscode.workspace.getConfiguration('mathrender.inlineRender').get<boolean>('enabled', false);
+  return vscode.workspace.getConfiguration('mathdocs.inlineRender').get<boolean>('enabled', false);
 }
 
 function isRangePreviewCodeLens(lens: vscode.CodeLens): boolean {
-  return lens.command?.command === 'mathrender.previewRange';
+  return lens.command?.command === 'mathdocs.previewRange';
 }
 
 async function convertCompletedSymbolLookup(event: vscode.TextDocumentChangeEvent) {
@@ -452,7 +452,7 @@ class InlineMathSpacerCodeLensProvider implements vscode.CodeLensProvider {
         const range = toVsCodeRange(block.range);
         return new vscode.CodeLens(new vscode.Range(range.start.line, 0, range.start.line, 0), {
           title: ' ',
-          command: 'mathrender.inlineRenderSpacer'
+          command: 'mathdocs.inlineRenderSpacer'
         });
       });
   }
@@ -469,7 +469,7 @@ class InlineMathOverlayController implements vscode.Disposable {
       vscode.workspace.onDidChangeTextDocument((event) => this.refreshDocument(event.document)),
       vscode.window.onDidChangeActiveColorTheme(() => this.refreshAllVisibleEditors()),
       vscode.workspace.onDidChangeConfiguration((event) => {
-        if (!event.affectsConfiguration('mathrender.inlineRender.enabled')) {
+        if (!event.affectsConfiguration('mathdocs.inlineRender.enabled')) {
           return;
         }
 
@@ -588,12 +588,12 @@ class MarkdownStringCodeLensProvider implements vscode.CodeLensProvider {
       return [
         new vscode.CodeLens(range, {
           title: 'Collapse all markdown',
-          command: 'mathrender.collapseMarkdownString',
+          command: 'mathdocs.collapseMarkdownString',
           arguments: [arg]
         }),
         new vscode.CodeLens(range, {
           title: 'Expand all markdown',
-          command: 'mathrender.expandMarkdownString',
+          command: 'mathdocs.expandMarkdownString',
           arguments: [arg]
         })
       ];
@@ -609,7 +609,7 @@ class MarkdownStringFoldingRangeProvider implements vscode.FoldingRangeProvider 
   }
 }
 
-class MathRenderHoverProvider implements vscode.HoverProvider {
+class MathDocsHoverProvider implements vscode.HoverProvider {
   async provideHover(
     document: vscode.TextDocument,
     position: vscode.Position
@@ -760,7 +760,7 @@ function mathHoverImageMarkdown(latex: string): string {
 }
 
 function mathHoverSvgDataUri(latex: string): string {
-  const metrics = hoverMathRenderMetrics(latex);
+  const metrics = hoverMathDocsMetrics(latex);
   const html = katex.renderToString(latex, {
     displayMode: true,
     throwOnError: false,
@@ -772,18 +772,18 @@ function mathHoverSvgDataUri(latex: string): string {
   <foreignObject x="0" y="0" width="${metrics.width}" height="${metrics.height}">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>${escapeHtml(css)}
-        .mathrender-hover-viewport { width:${metrics.width}px; min-height:${metrics.height}px; overflow:visible; display:flex; align-items:center; }
-        .mathrender-hover-math { color:${fg}; font-size:${metrics.fontSize}px; line-height:1.25; white-space:nowrap; padding:12px 0; }
-        .mathrender-hover-math .katex-display { margin: 0; text-align: left; }
+        .mathdocs-hover-viewport { width:${metrics.width}px; min-height:${metrics.height}px; overflow:visible; display:flex; align-items:center; }
+        .mathdocs-hover-math { color:${fg}; font-size:${metrics.fontSize}px; line-height:1.25; white-space:nowrap; padding:12px 0; }
+        .mathdocs-hover-math .katex-display { margin: 0; text-align: left; }
       </style>
-      <div class="mathrender-hover-viewport"><div class="mathrender-hover-math">${html}</div></div>
+      <div class="mathdocs-hover-viewport"><div class="mathdocs-hover-math">${html}</div></div>
     </div>
   </foreignObject>
 </svg>`;
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 }
 
-function hoverMathRenderMetrics(latex: string): HoverMathRenderMetrics {
+function hoverMathDocsMetrics(latex: string): HoverMathDocsMetrics {
   const width = Math.min(980, Math.max(360, latex.length * 11));
   if (/\\begin\{(?:cases|matrix|pmatrix|bmatrix|aligned|array)\}/.test(latex)) {
     return { width, height: 220, fontSize: 19 };
@@ -795,7 +795,7 @@ function hoverMathRenderMetrics(latex: string): HoverMathRenderMetrics {
 }
 
 function inlineMathSvgDataUri(latex: string): string {
-  const metrics = inlineMathRenderMetrics(latex);
+  const metrics = inlineMathDocsMetrics(latex);
   const width = Math.min(900, Math.max(180, latex.length * metrics.widthPerCharacter));
   const height = inlineMathSvgHeight;
   const html = katex.renderToString(latex, {
@@ -809,18 +809,18 @@ function inlineMathSvgDataUri(latex: string): string {
   <foreignObject x="0" y="0" width="${width}" height="${height}">
     <div xmlns="http://www.w3.org/1999/xhtml">
       <style>${escapeHtml(css)}
-        .mathrender-inline-viewport { width:${width}px; height:${height}px; overflow:hidden; display:flex; align-items:center; }
-        .mathrender-inline-math { color:${fg}; font-size:${metrics.fontSize}px; line-height:1; white-space:nowrap; transform:translateY(${metrics.translateY}px) scale(${metrics.scale}); transform-origin:left center; }
-        .mathrender-inline-math .katex { font-size:1em; }
+        .mathdocs-inline-viewport { width:${width}px; height:${height}px; overflow:hidden; display:flex; align-items:center; }
+        .mathdocs-inline-math { color:${fg}; font-size:${metrics.fontSize}px; line-height:1; white-space:nowrap; transform:translateY(${metrics.translateY}px) scale(${metrics.scale}); transform-origin:left center; }
+        .mathdocs-inline-math .katex { font-size:1em; }
       </style>
-      <div class="mathrender-inline-viewport"><div class="mathrender-inline-math">${html}</div></div>
+      <div class="mathdocs-inline-viewport"><div class="mathdocs-inline-math">${html}</div></div>
     </div>
   </foreignObject>
 </svg>`;
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 }
 
-function inlineMathRenderMetrics(latex: string): InlineMathRenderMetrics {
+function inlineMathDocsMetrics(latex: string): InlineMathDocsMetrics {
   if (hasTallInlineMath(latex)) {
     return {
       fontSize: 14,
@@ -857,8 +857,8 @@ function escapeMarkdownAlt(value: string): string {
 function showPreview(title: string, markdown: string) {
   const katexDist = path.join(__dirname, 'katex');
   const panel = vscode.window.createWebviewPanel(
-    'mathrenderPreview',
-    `MathRender: ${path.basename(title)}`,
+    'mathdocsPreview',
+    `MathDocs: ${path.basename(title)}`,
     vscode.ViewColumn.Beside,
     {
       enableScripts: false,
@@ -873,7 +873,7 @@ function renderMarkdown(markdown: string, webview: vscode.Webview): string {
   const katexCss = loadKatexCss(webview);
   const mathBlocks: string[] = [];
   const withPlaceholders = markdown.replace(/\$\$\s*\n?([\s\S]*?)\n?\s*\$\$/g, (_match, latex) => {
-    const placeholder = `@@MATHRENDER_KATEX_BLOCK_${mathBlocks.length}@@`;
+    const placeholder = `@@MATHDOCS_KATEX_BLOCK_${mathBlocks.length}@@`;
     try {
       mathBlocks.push(katex.renderToString(latex.trim(), { displayMode: true, throwOnError: false }));
     } catch {
@@ -883,7 +883,7 @@ function renderMarkdown(markdown: string, webview: vscode.Webview): string {
   });
   let body = md.render(withPlaceholders);
   mathBlocks.forEach((html, index) => {
-    const placeholder = `@@MATHRENDER_KATEX_BLOCK_${index}@@`;
+    const placeholder = `@@MATHDOCS_KATEX_BLOCK_${index}@@`;
     body = body
       .replace(new RegExp(`<p>\\s*${placeholder}\\s*</p>`, 'g'), html)
       .replaceAll(placeholder, html);

@@ -1,6 +1,6 @@
-# mathrender
+# mathdocs
 
-`mathrender` provides tiny metadata helpers used by the editor-side MathRender
+`mathdocs` provides tiny metadata helpers used by the editor-side MathDocs
 renderer. The helpers make Python source valid and type-checkable; rendering
 tools read the source statically and do not import target modules.
 

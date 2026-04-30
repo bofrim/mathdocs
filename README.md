@@ -1,6 +1,6 @@
-# MathRender
+# MathDocs
 
-MathRender statically renders ordinary Python source as Markdown plus LaTeX.
+MathDocs statically renders ordinary Python source as Markdown plus LaTeX.
 The Python program remains the source of truth; the renderer reads annotations,
 decorators, stubs, and sidecar metadata without importing or executing target
 modules.
@@ -11,13 +11,13 @@ modules.
 uv run render examples/linear_model.py
 uv run render examples/gpt_transformer.py
 uv run render examples/feature_showcase.py
-uv run mrpy examples/generated_plot.py
+uv run mdpy examples/generated_plot.py
 uv run render examples/generated_plot.py
-cargo run -p mathrender_cli -- symbols examples/linear_model.py
-cargo run -p mathrender_lsp
+cargo run -p mathdocs_cli -- symbols examples/linear_model.py
+cargo run -p mathdocs_lsp
 ```
 
-The tiny Python package lives in `python/mathrender` and provides `Symbol`,
+The tiny Python package lives in `python/mathdocs` and provides `Symbol`,
 `Tensor`, `RenderTemplate`, `Image`, render placement helpers, and the identity
 `render_as` decorator.
 
@@ -26,7 +26,7 @@ plot, diagram, screenshot, or other image at an exact point in the rendered
 document:
 
 ```python
-from mathrender import render_figure
+from mathdocs import render_figure
 
 """
 # Training run

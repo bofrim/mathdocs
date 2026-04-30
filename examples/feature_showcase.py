@@ -1,18 +1,18 @@
 # pyright: reportUnboundVariable=false, reportOperatorIssue=false
 from typing import Annotated, Any
 
-from mathrender import Symbol, Tensor, render_as
+from mathdocs import Symbol, Tensor, render_as
 
 """
-# MathRender Feature Showcase
+# MathDocs Feature Showcase
 
 This document is written as ordinary Python source, but it is intended to read
-like documentation after MathRender converts it to Markdown and LaTeX. The
+like documentation after MathDocs converts it to Markdown and LaTeX. The
 examples below cover the core pieces used by the renderer: Markdown blocks,
 symbol metadata, tensor metadata, arithmetic, powers, exponentials, function
 templates, indexing, and named equations.
 
-The file does not need to be executable. MathRender reads it statically, so the
+The file does not need to be executable. MathDocs reads it statically, so the
 annotations and decorators are enough to describe how each expression should be
 rendered.
 """
@@ -91,7 +91,7 @@ def integral(lower, upper, value, variable): ...
 ## Symbols and Arithmetic
 
 Names can be assigned display metadata with `Symbol`. When an expression uses
-those names, MathRender substitutes the LaTeX form and preserves ordinary
+those names, MathDocs substitutes the LaTeX form and preserves ordinary
 Python operator structure.
 """
 

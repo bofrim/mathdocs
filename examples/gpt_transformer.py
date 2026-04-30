@@ -1,14 +1,14 @@
 # pyright: reportUnboundVariable=false, reportOperatorIssue=false
 from typing import Annotated
 
-from mathrender import Symbol, Tensor, render_as
+from mathdocs import Symbol, Tensor, render_as
 
 """
 # GPT-Style Decoder Transformer
 
 This example walks through the forward pass of a decoder-only transformer, the
 architecture family used by GPT models. The Python source is not meant to run as
-ordinary numerical code. Instead, MathRender reads the annotations, template
+ordinary numerical code. Instead, MathDocs reads the annotations, template
 decorators, Markdown blocks, and symbolic assignments to produce a technical
 note with equations.
 

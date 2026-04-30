@@ -1,7 +1,7 @@
 # pyright: reportUnboundVariable=false, reportOperatorIssue=false
 from typing import Annotated
 
-from mathrender import Symbol, Tensor, render_as
+from mathdocs import Symbol, Tensor, render_as
 
 mu: Annotated[object, Symbol(r"\mu")]
 nu: Annotated[object, Symbol(r"\nu")]

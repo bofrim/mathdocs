@@ -1,0 +1,11 @@
+[package]
+name = "mathdocs_metadata"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+mathdocs_ast = { path = "../mathdocs_ast" }
+serde.workspace = true
+toml.workspace = true

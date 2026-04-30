@@ -1,13 +1,13 @@
 {
-  "name": "mathrender-vscode",
-  "displayName": "MathRender",
-  "description": "Preview Python MathRender Markdown and LaTeX from static source metadata.",
+  "name": "mathdocs-vscode",
+  "displayName": "MathDocs",
+  "description": "Preview Python MathDocs Markdown and LaTeX from static source metadata.",
   "version": "0.1.0",
-  "publisher": "mathrender",
+  "publisher": "mathdocs",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bradofrim/mathrender.git",
+    "url": "https://github.com/bradofrim/mathdocs.git",
     "directory": "editors/vscode"
   },
   "engines": {
@@ -19,58 +19,58 @@
   ],
   "activationEvents": [
     "onLanguage:python",
-    "onCommand:mathrender.previewDocument",
-    "onCommand:mathrender.previewCurrentFile",
-    "onCommand:mathrender.previewSelection",
-    "onCommand:mathrender.previewRange",
-    "onCommand:mathrender.toggleInlineRender",
-    "onCommand:mathrender.collapseMarkdownString",
-    "onCommand:mathrender.expandMarkdownString"
+    "onCommand:mathdocs.previewDocument",
+    "onCommand:mathdocs.previewCurrentFile",
+    "onCommand:mathdocs.previewSelection",
+    "onCommand:mathdocs.previewRange",
+    "onCommand:mathdocs.toggleInlineRender",
+    "onCommand:mathdocs.collapseMarkdownString",
+    "onCommand:mathdocs.expandMarkdownString"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "mathrender.previewDocument",
-        "title": "MathRender: Preview File"
+        "command": "mathdocs.previewDocument",
+        "title": "MathDocs: Preview File"
       },
       {
-        "command": "mathrender.previewCurrentFile",
-        "title": "MathRender: Preview Current File"
+        "command": "mathdocs.previewCurrentFile",
+        "title": "MathDocs: Preview Current File"
       },
       {
-        "command": "mathrender.previewSelection",
-        "title": "MathRender: Preview Selection"
+        "command": "mathdocs.previewSelection",
+        "title": "MathDocs: Preview Selection"
       },
       {
-        "command": "mathrender.previewRange",
-        "title": "MathRender: Preview Range"
+        "command": "mathdocs.previewRange",
+        "title": "MathDocs: Preview Range"
       },
       {
-        "command": "mathrender.toggleInlineRender",
-        "title": "MathRender: Toggle Inline Rendering"
+        "command": "mathdocs.toggleInlineRender",
+        "title": "MathDocs: Toggle Inline Rendering"
       },
       {
-        "command": "mathrender.collapseMarkdownString",
-        "title": "MathRender: Collapse All Markdown Strings"
+        "command": "mathdocs.collapseMarkdownString",
+        "title": "MathDocs: Collapse All Markdown Strings"
       },
       {
-        "command": "mathrender.expandMarkdownString",
-        "title": "MathRender: Expand All Markdown Strings"
+        "command": "mathdocs.expandMarkdownString",
+        "title": "MathDocs: Expand All Markdown Strings"
       }
     ],
     "configuration": {
-      "title": "MathRender",
+      "title": "MathDocs",
       "properties": {
-        "mathrender.serverPath": {
+        "mathdocs.serverPath": {
           "type": "string",
           "default": "",
-          "description": "Path to the mathrender-lsp binary. Empty uses PATH or the workspace target/debug binary."
+          "description": "Path to the mathdocs-lsp binary. Empty uses PATH or the workspace target/debug binary."
         },
-        "mathrender.inlineRender.enabled": {
+        "mathdocs.inlineRender.enabled": {
           "type": "boolean",
           "default": false,
-          "description": "Use a CodeLens spacer plus overlay to render MathRender equations above code lines. This is experimental and may need per-theme tuning."
+          "description": "Use a CodeLens spacer plus overlay to render MathDocs equations above code lines. This is experimental and may need per-theme tuning."
         }
       }
     }

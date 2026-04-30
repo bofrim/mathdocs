@@ -1,0 +1,18 @@
+[package]
+name = "mathdocs_cli"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[[bin]]
+name = "mathdocs"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+mathdocs_ast = { path = "../mathdocs_ast" }
+mathdocs_markdown = { path = "../mathdocs_markdown" }
+mathdocs_metadata = { path = "../mathdocs_metadata" }
+serde_json.workspace = true

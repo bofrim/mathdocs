@@ -1,19 +1,19 @@
 [workspace]
 members = [
-    "crates/mathrender_ast",
-    "crates/mathrender_metadata",
-    "crates/mathrender_ir",
-    "crates/mathrender_latex",
-    "crates/mathrender_markdown",
-    "crates/mathrender_cli",
-    "crates/mathrender_lsp",
+    "crates/mathdocs_ast",
+    "crates/mathdocs_metadata",
+    "crates/mathdocs_ir",
+    "crates/mathdocs_latex",
+    "crates/mathdocs_markdown",
+    "crates/mathdocs_cli",
+    "crates/mathdocs_lsp",
 ]
 resolver = "2"
 
 [workspace.package]
 edition = "2021"
 license = "MIT"
-repository = "https://example.invalid/mathrender"
+repository = "https://example.invalid/mathdocs"
 version = "0.1.0"
 
 [workspace.dependencies]

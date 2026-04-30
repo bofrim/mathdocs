@@ -620,7 +620,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mathrender_ast"
+name = "mathdocs_ast"
 version = "0.1.0"
 dependencies = [
  "rustpython-parser",
@@ -629,43 +629,43 @@ dependencies = [
 ]
 
 [[package]]
-name = "mathrender_cli"
+name = "mathdocs_cli"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
- "mathrender_ast",
- "mathrender_markdown",
- "mathrender_metadata",
+ "mathdocs_ast",
+ "mathdocs_markdown",
+ "mathdocs_metadata",
  "serde_json",
 ]
 
 [[package]]
-name = "mathrender_ir"
+name = "mathdocs_ir"
 version = "0.1.0"
 dependencies = [
- "mathrender_ast",
- "mathrender_metadata",
+ "mathdocs_ast",
+ "mathdocs_metadata",
  "serde",
 ]
 
 [[package]]
-name = "mathrender_latex"
+name = "mathdocs_latex"
 version = "0.1.0"
 dependencies = [
- "mathrender_ast",
- "mathrender_ir",
- "mathrender_metadata",
+ "mathdocs_ast",
+ "mathdocs_ir",
+ "mathdocs_metadata",
  "serde",
 ]
 
 [[package]]
-name = "mathrender_lsp"
+name = "mathdocs_lsp"
 version = "0.1.0"
 dependencies = [
- "mathrender_ast",
- "mathrender_markdown",
- "mathrender_metadata",
+ "mathdocs_ast",
+ "mathdocs_markdown",
+ "mathdocs_metadata",
  "serde",
  "serde_json",
  "tokio",
@@ -674,22 +674,22 @@ dependencies = [
 ]
 
 [[package]]
-name = "mathrender_markdown"
+name = "mathdocs_markdown"
 version = "0.1.0"
 dependencies = [
- "mathrender_ast",
- "mathrender_ir",
- "mathrender_latex",
- "mathrender_metadata",
+ "mathdocs_ast",
+ "mathdocs_ir",
+ "mathdocs_latex",
+ "mathdocs_metadata",
  "serde",
  "toml",
 ]
 
 [[package]]
-name = "mathrender_metadata"
+name = "mathdocs_metadata"
 version = "0.1.0"
 dependencies = [
- "mathrender_ast",
+ "mathdocs_ast",
  "serde",
  "toml",
 ]

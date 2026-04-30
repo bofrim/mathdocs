@@ -45,7 +45,7 @@ A user writes normal Python:
 ```python
 from typing import Annotated
 import numpy as np
-from mathrender import Symbol, Tensor, render_as
+from mathdocs import Symbol, Tensor, render_as
 
 theta: Annotated[float, Symbol(r"\theta")]
 mu: Annotated[float, Symbol(r"\mu")]
@@ -110,7 +110,7 @@ from __future__ import annotations
 from typing import Annotated, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from mathrender import Symbol, Tensor, render_as
+    from mathdocs import Symbol, Tensor, render_as
 else:
     def render_as(*args, **kwargs):
         def deco(fn):
@@ -143,7 +143,7 @@ in `.pyi` files:
 def norm(x): ...
 
 # model.pyi
-from mathrender import render_as
+from mathdocs import render_as
 
 @render_as(latex=r"\left\|{0}\right\|")
 def norm(x): ...
@@ -160,7 +160,7 @@ This is the strict zero-cost mechanism for functions.
 A third mode stores render metadata in a sidecar file:
 
 ```toml
-# model.mathrender.toml
+# model.mathdocs.toml
 [symbols]
 theta = "\\theta"
 sigma = "\\sigma"
@@ -299,16 +299,16 @@ $$
 Users need a way to keep ordinary code from rendering:
 
 ```python
-# mathrender: ignore
+# mathdocs: ignore
 cache = expensive_runtime_cache()
 ```
 
 Range-level suppression:
 
 ```python
-# mathrender: off
+# mathdocs: off
 ...
-# mathrender: on
+# mathdocs: on
 ```
 
 ---
@@ -432,7 +432,7 @@ The analyzer records metadata for the function symbol `sqrt`. It should also
 support qualified decorators:
 
 ```python
-@mathrender.render_as(latex=r"\operatorname{tr}\left({0}\right)")
+@mathdocs.render_as(latex=r"\operatorname{tr}\left({0}\right)")
 def trace(x): ...
 ```
 
@@ -778,7 +778,7 @@ built-in render metadata.
 
 ```python
 from typing import Annotated
-from mathrender import Symbol, Tensor, render_as
+from mathdocs import Symbol, Tensor, render_as
 
 mu: Annotated[Index, Symbol(r"\mu")]
 nu: Annotated[Index, Symbol(r"\nu")]
@@ -911,7 +911,7 @@ VS Code / editor client
   |
   | LSP requests, decorations, hover, code lens
   v
-mathrender language server (Rust)
+mathdocs language server (Rust)
   |
   | parse, index, render, diagnostics
   v
@@ -935,8 +935,8 @@ project source files, .pyi stubs, sidecars
 
 Minimum viable extension:
 
-- command: `MathRender: Preview Current File`;
-- command: `MathRender: Preview Selection`;
+- command: `MathDocs: Preview Current File`;
+- command: `MathDocs: Preview Selection`;
 - hover: show rendered equation for expression under cursor;
 - code lens above renderable top-level assignments;
 - diagnostics for unknown render metadata.
@@ -983,15 +983,15 @@ Suggested workspace:
 
 ```text
 crates/
-  mathrender_ast/        Python parse wrappers and source ranges
-  mathrender_metadata/   Annotation/decorator/stub/sidecar extraction
-  mathrender_ir/         Render IR and lowering
-  mathrender_latex/      LaTeX renderer
-  mathrender_markdown/   Markdown document assembly
-  mathrender_lsp/        Language server
-  mathrender_cli/        CLI for tests and docs
+  mathdocs_ast/        Python parse wrappers and source ranges
+  mathdocs_metadata/   Annotation/decorator/stub/sidecar extraction
+  mathdocs_ir/         Render IR and lowering
+  mathdocs_latex/      LaTeX renderer
+  mathdocs_markdown/   Markdown document assembly
+  mathdocs_lsp/        Language server
+  mathdocs_cli/        CLI for tests and docs
 python/
-  mathrender/            Tiny Python package with metadata stubs
+  mathdocs/            Tiny Python package with metadata stubs
 editors/
   vscode/                VS Code extension client
 ```
@@ -1001,9 +1001,9 @@ editors/
 The CLI is useful before the editor extension exists:
 
 ```bash
-mathrender render examples/electrodynamics.py --format markdown
-mathrender render examples/electrodynamics.py --range 20:1-28:1
-mathrender symbols examples/electrodynamics.py
+mathdocs render examples/electrodynamics.py --format markdown
+mathdocs render examples/electrodynamics.py --range 20:1-28:1
+mathdocs symbols examples/electrodynamics.py
 ```
 
 ### 13.2 Python package
@@ -1011,7 +1011,7 @@ mathrender symbols examples/electrodynamics.py
 The Python package should be publishable separately:
 
 ```text
-mathrender/
+mathdocs/
   __init__.py
   py.typed
 ```
@@ -1037,7 +1037,7 @@ Examples:
 Diagnostic example:
 
 ```text
-warning[mathrender::tensor-index]:
+warning[mathdocs::tensor-index]:
   cannot infer contraction for A_{ij} @ x_k; no shared index
 ```
 
@@ -1187,7 +1187,7 @@ Input file:
 from __future__ import annotations
 from typing import Annotated
 import numpy as np
-from mathrender import Symbol, Tensor, render_as
+from mathdocs import Symbol, Tensor, render_as
 
 """
 # Linear model
