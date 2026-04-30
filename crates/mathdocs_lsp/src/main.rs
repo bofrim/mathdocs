@@ -212,7 +212,7 @@ impl Backend {
         Ok(self
             .render_document_for_uri(&params.text_document.uri)
             .await
-            .unwrap_or_else(|| empty_document()))
+            .unwrap_or_else(empty_document))
     }
 
     async fn render_range(&self, params: RenderRangeParams) -> RpcResult<RenderedDocument> {
@@ -265,7 +265,7 @@ impl Backend {
         let rendered = self
             .render_document_for_uri(&params.text_document.uri)
             .await
-            .unwrap_or_else(|| empty_document());
+            .unwrap_or_else(empty_document);
         Ok(ListBlocksResponse {
             blocks: rendered.blocks,
         })

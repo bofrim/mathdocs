@@ -138,19 +138,10 @@ pub enum BlockKind {
     },
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RenderConfig {
     pub auto_name_subscript: Option<bool>,
     pub auto_name_symbol: Option<bool>,
-}
-
-impl Default for RenderConfig {
-    fn default() -> Self {
-        Self {
-            auto_name_subscript: None,
-            auto_name_symbol: None,
-        }
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

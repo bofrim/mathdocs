@@ -26,17 +26,9 @@ pub struct RenderedDocument {
     pub diagnostics: Vec<Diagnostic>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct RenderEngine {
     pub options: RenderOptions,
-}
-
-impl Default for RenderEngine {
-    fn default() -> Self {
-        Self {
-            options: RenderOptions::default(),
-        }
-    }
 }
 
 impl RenderEngine {
@@ -95,6 +87,7 @@ impl RenderEngine {
         self.render_source(path, display_path, source).blocks
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn render_parsed(
         &self,
         source: &SourceFile,

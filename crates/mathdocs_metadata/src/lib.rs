@@ -234,7 +234,7 @@ pub fn resolve_symbol_lookup(query: &str) -> Option<&'static SymbolLookupEntry> 
 
     symbol_lookup_entries()
         .iter()
-        .find(|entry| entry.aliases.iter().any(|alias| *alias == query))
+        .find(|entry| entry.aliases.contains(&query))
 }
 
 pub fn expand_symbol_lookups(source: &str) -> String {
