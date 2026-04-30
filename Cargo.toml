@@ -14,7 +14,7 @@ resolver = "2"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/bofrim/mathdocs"
-version = "0.1.0"
+version = "0.1.2"
 
 [workspace.dependencies]
 anyhow = "1.0"

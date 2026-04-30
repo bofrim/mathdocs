@@ -621,7 +621,7 @@ dependencies = [
 
 [[package]]
 name = "mathdocs_ast"
-version = "0.1.0"
+version = "0.1.2"
 dependencies = [
  "rustpython-parser",
  "serde",
@@ -630,7 +630,7 @@ dependencies = [
 
 [[package]]
 name = "mathdocs_cli"
-version = "0.1.0"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "clap",
@@ -642,7 +642,7 @@ dependencies = [
 
 [[package]]
 name = "mathdocs_ir"
-version = "0.1.0"
+version = "0.1.2"
 dependencies = [
  "mathdocs_ast",
  "mathdocs_metadata",
@@ -651,7 +651,7 @@ dependencies = [
 
 [[package]]
 name = "mathdocs_latex"
-version = "0.1.0"
+version = "0.1.2"
 dependencies = [
  "mathdocs_ast",
  "mathdocs_ir",
@@ -661,7 +661,7 @@ dependencies = [
 
 [[package]]
 name = "mathdocs_lsp"
-version = "0.1.0"
+version = "0.1.2"
 dependencies = [
  "mathdocs_ast",
  "mathdocs_markdown",
@@ -675,7 +675,7 @@ dependencies = [
 
 [[package]]
 name = "mathdocs_markdown"
-version = "0.1.0"
+version = "0.1.2"
 dependencies = [
  "mathdocs_ast",
  "mathdocs_ir",
@@ -687,7 +687,7 @@ dependencies = [
 
 [[package]]
 name = "mathdocs_metadata"
-version = "0.1.0"
+version = "0.1.2"
 dependencies = [
  "mathdocs_ast",
  "serde",
