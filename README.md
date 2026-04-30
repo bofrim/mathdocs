@@ -1,40 +1,108 @@
 # MathDocs
 
-MathDocs statically renders ordinary Python source as Markdown plus LaTeX.
-The Python program remains the source of truth; the renderer reads annotations,
-decorators, stubs, and sidecar metadata without importing or executing target
-modules.
+MathDocs renders ordinary Python source files as Markdown with inline LaTeX
+math. The renderer reads annotations, decorators, and docstrings statically — it
+never imports or executes the target module — so a `.py` file *is* the document.
 
-## Quick Start
+## Install
 
 ```bash
-uv run render examples/linear_model.py
-uv run render examples/gpt_transformer.py
-uv run render examples/feature_showcase.py
-uv run mdpy examples/generated_plot.py
-uv run render examples/generated_plot.py
-cargo run -p mathdocs_cli -- symbols examples/linear_model.py
-cargo run -p mathdocs_lsp
+pip install mathdocs
 ```
 
-The tiny Python package lives in `python/mathdocs` and provides `Symbol`,
-`Tensor`, `RenderTemplate`, `Image`, render placement helpers, and the identity
-`render_as` decorator.
+The wheel ships the `mathdocs` CLI alongside the helper API. The VS Code
+extension is published as per-platform `.vsix` files on the
+[Releases page](https://github.com/bofrim/mathdocs/releases) — download the
+file matching your OS/arch and install with
+`code --install-extension mathdocs-vscode-<platform>.vsix`.
 
-Use `render_figure` as a top-level directive to include an already generated
-plot, diagram, screenshot, or other image at an exact point in the rendered
-document:
+## A small example
+
+A complete, runnable Python file:
 
 ```python
-from mathdocs import render_figure
+from typing import Annotated
+
+import numpy as np
+from mathdocs import Symbol, Tensor, render_as
 
 """
-# Training run
+# Linear model
+
+The prediction is a matrix-vector product plus a bias term, and the loss is
+the residual norm scaled by the noise standard deviation.
 """
 
-render_figure("artifacts/loss.png", alt="Loss curve", caption="Training loss")
+A: Annotated[np.ndarray, Tensor("A", ("i", "j"))]
+x: Annotated[np.ndarray, Tensor("x", ("j",))]
+b: Annotated[np.ndarray, Tensor("b", ("i",))]
+y: Annotated[np.ndarray, Tensor("y", ("i",))]
+sigma: Annotated[float, Symbol(r"\sigma")]
+
+
+@render_as(latex=r"\left\|{0}\right\|")
+def norm(v):
+    return np.linalg.norm(v)
+
+
+loss = norm(y - (A @ x + b)) / sigma
 ```
 
-Local relative figure paths are resolved relative to the Python source file and
-then emitted relative to the current working directory, so the rendered Markdown
-stays portable for the directory where the render command was invoked.
+Render it:
+
+```bash
+mathdocs render linear_model.py
+```
+
+Output:
+
+````markdown
+# Linear model
+
+The prediction is a matrix-vector product plus a bias term, and the loss is
+the residual norm scaled by the noise standard deviation.
+
+$$
+\operatorname{loss} = \frac{\left\|y_{i} - \left(A_{ij}x_{j} + b_{i}\right)\right\|}{\sigma}
+$$
+````
+
+The Python module still type-checks and runs unchanged. The annotations and
+`render_as` decorator are *metadata* that the renderer reads from the source —
+nothing executes when MathDocs builds the document.
+
+## What the helpers do
+
+- **`Symbol(latex)`** — annotate a scalar variable with how it should appear in
+  math (e.g. `sigma: Annotated[float, Symbol(r"\sigma")]` renders as $\sigma$).
+- **`Tensor(name, indices)`** — annotate an array with its tensor name and
+  index labels; the renderer attaches the indices automatically when the
+  variable appears in an expression.
+- **`@render_as(latex="...")`** — give a function a LaTeX template. `{0}`,
+  `{1}` etc. are filled with rendered argument expressions.
+- **`render_figure(path, caption=...)`** — drop a pre-generated image into the
+  output at a specific point. Useful when a script produces a plot beside the
+  source it documents.
+
+More examples in [`examples/`](examples/) — `electrodynamics.py`,
+`feature_showcase.py`, `gpt_transformer.py`.
+
+## CLI
+
+```bash
+mathdocs render path/to/file.py        # print rendered Markdown
+mathdocs symbols path/to/file.py       # list discovered symbols
+mathdocs check path/to/file.py         # report diagnostics
+```
+
+`python -m mathdocs <script.py>` runs a Python script with the script
+directory added to `sys.path` — useful when a script needs to generate
+artifacts (plots, tables) before the renderer reads it.
+
+## Repository layout
+
+- [`python/`](python/) — `mathdocs` Python package (helpers + CLI entry point)
+- [`crates/`](crates/) — Rust workspace; `mathdocs_cli` is the renderer binary
+  bundled into the wheel, `mathdocs_lsp` powers the editor extension
+- [`editors/vscode/`](editors/vscode/) — the VS Code extension source
+- [`examples/`](examples/) — example `.py` files used by the test suite
