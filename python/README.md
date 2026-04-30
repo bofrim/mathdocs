@@ -1,9 +1,8 @@
 # mathdocs
 
 `mathdocs` renders ordinary Python source files as Markdown with inline LaTeX
-math. The renderer reads annotations, decorators, stubs, and sidecar metadata
-statically — it never imports or executes the target module. Installing the
-package gives you both the helper API and the `mathdocs` CLI.
+math. The renderer reads annotations, decorators, and docstrings statically — it
+never imports or executes the target module — so a `.py` file *is* the document.
 
 ## Installation
 
@@ -11,49 +10,85 @@ package gives you both the helper API and the `mathdocs` CLI.
 pip install mathdocs
 ```
 
+## A small example
+
+A complete, runnable Python file:
+
+```python
+from typing import Annotated
+
+import numpy as np
+from mathdocs import Symbol, Tensor, render_as
+
+"""
+# Linear model
+
+The prediction is a matrix-vector product plus a bias term, and the loss is
+the residual norm scaled by the noise standard deviation.
+"""
+
+A: Annotated[np.ndarray, Tensor("A", ("i", "j"))]
+x: Annotated[np.ndarray, Tensor("x", ("j",))]
+b: Annotated[np.ndarray, Tensor("b", ("i",))]
+y: Annotated[np.ndarray, Tensor("y", ("i",))]
+sigma: Annotated[float, Symbol(r"\sigma")]
+
+
+@render_as(latex=r"\left\|{0}\right\|")
+def norm(v):
+    return np.linalg.norm(v)
+
+
+loss = norm(y - (A @ x + b)) / sigma
+```
+
+Render it:
+
+```bash
+mathdocs render linear_model.py
+```
+
+Output:
+
+````markdown
+# Linear model
+
+The prediction is a matrix-vector product plus a bias term, and the loss is
+the residual norm scaled by the noise standard deviation.
+
+$$
+\operatorname{loss} = \frac{\left\|y_{i} - \left(A_{ij}x_{j} + b_{i}\right)\right\|}{\sigma}
+$$
+````
+
+The Python module still type-checks and runs unchanged. The annotations and
+`render_as` decorator are *metadata* that the renderer reads from the source —
+nothing executes when MathDocs builds the document.
+
+## What the helpers do
+
+- **`Symbol(latex)`** — annotate a scalar variable with how it should appear in
+  math (e.g. `sigma: Annotated[float, Symbol(r"\sigma")]` renders as $\sigma$).
+- **`Tensor(name, indices)`** — annotate an array with its tensor name and
+  index labels; the renderer attaches the indices automatically when the
+  variable appears in an expression.
+- **`@render_as(latex="...")`** — give a function a LaTeX template. `{0}`,
+  `{1}` etc. are filled with rendered argument expressions.
+- **`render_figure(path, caption=...)`** — drop a pre-generated image into the
+  output at a specific point. Useful when a script produces a plot beside the
+  source it documents.
+
 ## CLI
 
 ```bash
-mathdocs render examples/linear_model.py        # print rendered Markdown
-mathdocs symbols examples/linear_model.py       # list discovered symbols
-mathdocs check examples/linear_model.py         # report diagnostics
+mathdocs render path/to/file.py        # print rendered Markdown
+mathdocs symbols path/to/file.py       # list discovered symbols
+mathdocs check path/to/file.py         # report diagnostics
 ```
-
-## Helper API
-
-Import the helpers in ordinary Python code:
-
-```python
-from mathdocs import Symbol, Tensor, render_as, render_figure
-
-theta = Symbol(r"\theta", text="angle")
-stress = Tensor(r"\sigma", indices=("i", "j"))
-
-
-@render_as(latex=r"x^2")
-def square(x: float) -> float:
-    return x * x
-
-
-render_figure(
-    "artifacts/training_loss.svg",
-    alt="Training loss curve",
-    caption="Loss decreases over eight training epochs.",
-)
-```
-
-Top-level `render_figure(...)` calls are static placement directives. They tell
-the renderer where to include an already generated plot, diagram, screenshot, or
-other image in the final Markdown document. `render_image(...)` and
-`render_plot(...)` remain available as aliases.
 
 `python -m mathdocs <script.py>` runs a Python script with the script
-directory added to `sys.path`, which is useful for examples that generate
-local artifacts before the renderer reads the source:
-
-```bash
-python -m mathdocs examples/generated_plot.py
-```
+directory added to `sys.path` — useful when a script needs to generate
+artifacts (plots, tables) before the renderer reads it.
 
 The MathDocs project (including the VS Code extension) lives at
 <https://github.com/bofrim/mathdocs>.
