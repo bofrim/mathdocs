@@ -433,10 +433,7 @@ impl Parser {
             };
         }
 
-        loop {
-            let Some((op, left_bp, right_bp)) = infix_binding_power(self.peek()) else {
-                break;
-            };
+        while let Some((op, left_bp, right_bp)) = infix_binding_power(self.peek()) {
             if left_bp < min_bp {
                 break;
             }
