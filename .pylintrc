@@ -1,0 +1,12 @@
+[MAIN]
+init-hook='import os, sys; sys.path.insert(0, os.path.join(os.getcwd(), "python"))'
+
+[MESSAGES CONTROL]
+disable=
+    invalid-name,
+    missing-function-docstring,
+    missing-module-docstring,
+    pointless-string-statement,
+    unused-argument,
+    used-before-assignment
+

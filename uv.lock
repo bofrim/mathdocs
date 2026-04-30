@@ -1,0 +1,13 @@
+version = 1
+revision = 3
+requires-python = ">=3.10"
+
+[manifest]
+members = [
+    "mathrender",
+]
+
+[[package]]
+name = "mathrender"
+version = "0.1.0"
+source = { editable = "python" }

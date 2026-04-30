@@ -1,0 +1,12 @@
+node_modules/**
+src/**
+scripts/**
+*.vsix
+package-lock.json
+tsconfig.json
+.vscode/**
+.vscode-test/**
+out/**
+**/*.map
+npm-debug.log
+yarn-error.log

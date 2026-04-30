@@ -1,0 +1,11 @@
+[package]
+name = "mathrender_metadata"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+mathrender_ast = { path = "../mathrender_ast" }
+serde.workspace = true
+toml.workspace = true

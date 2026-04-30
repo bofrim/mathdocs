@@ -1,0 +1,6 @@
+[symbols]
+theta = "\\theta"
+sigma = "\\sigma"
+
+[functions.abs]
+latex = "\\left|{0}\\right|"

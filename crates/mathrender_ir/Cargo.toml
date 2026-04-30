@@ -1,0 +1,11 @@
+[package]
+name = "mathrender_ir"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+mathrender_ast = { path = "../mathrender_ast" }
+mathrender_metadata = { path = "../mathrender_metadata" }
+serde.workspace = true

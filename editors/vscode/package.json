@@ -1,0 +1,98 @@
+{
+  "name": "mathrender-vscode",
+  "displayName": "MathRender",
+  "description": "Preview Python MathRender Markdown and LaTeX from static source metadata.",
+  "version": "0.1.0",
+  "publisher": "mathrender",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bradofrim/mathrender.git",
+    "directory": "editors/vscode"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Visualization"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onCommand:mathrender.previewDocument",
+    "onCommand:mathrender.previewCurrentFile",
+    "onCommand:mathrender.previewSelection",
+    "onCommand:mathrender.previewRange",
+    "onCommand:mathrender.toggleInlineRender",
+    "onCommand:mathrender.collapseMarkdownString",
+    "onCommand:mathrender.expandMarkdownString"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "mathrender.previewDocument",
+        "title": "MathRender: Preview File"
+      },
+      {
+        "command": "mathrender.previewCurrentFile",
+        "title": "MathRender: Preview Current File"
+      },
+      {
+        "command": "mathrender.previewSelection",
+        "title": "MathRender: Preview Selection"
+      },
+      {
+        "command": "mathrender.previewRange",
+        "title": "MathRender: Preview Range"
+      },
+      {
+        "command": "mathrender.toggleInlineRender",
+        "title": "MathRender: Toggle Inline Rendering"
+      },
+      {
+        "command": "mathrender.collapseMarkdownString",
+        "title": "MathRender: Collapse All Markdown Strings"
+      },
+      {
+        "command": "mathrender.expandMarkdownString",
+        "title": "MathRender: Expand All Markdown Strings"
+      }
+    ],
+    "configuration": {
+      "title": "MathRender",
+      "properties": {
+        "mathrender.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the mathrender-lsp binary. Empty uses PATH or the workspace target/debug binary."
+        },
+        "mathrender.inlineRender.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use a CodeLens spacer plus overlay to render MathRender equations above code lines. This is experimental and may need per-theme tuning."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "bundle": "esbuild src/extension.ts --bundle --platform=node --format=cjs --target=node20 --external:vscode --outfile=dist/extension.js && npm run copy:katex",
+    "copy:katex": "node scripts/copy-katex-assets.js",
+    "compile": "tsc -p ./ --noEmit && npm run bundle",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "katex": "^0.16.22",
+    "markdown-it": "^14.1.0",
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^22.10.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.9.1",
+    "esbuild": "^0.28.0",
+    "typescript": "^5.9.3"
+  }
+}

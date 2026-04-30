@@ -1,0 +1,11 @@
+[package]
+name = "mathrender_ast"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+version.workspace = true
+
+[dependencies]
+rustpython-parser.workspace = true
+serde.workspace = true
+thiserror.workspace = true

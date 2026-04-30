@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mathrender"
+version = "0.1.0"
+description = "Tiny zero-cost metadata helpers for MathRender source rendering"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "MathRender contributors" }]
+
+[project.scripts]
+mrpy = "mathrender.cli:main"
+render = "mathrender.cli:render_main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["mathrender"]
