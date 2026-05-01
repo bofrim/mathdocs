@@ -10,7 +10,7 @@ fn fixture(name: &str) -> PathBuf {
 #[test]
 fn renders_linear_model_example() {
     let rendered = RenderEngine::default()
-        .render_path(&fixture("linear_model.py"))
+        .render_path(&fixture("linear_model/linear_model.py"))
         .unwrap();
     assert!(rendered.markdown.contains("# Linear model"));
     assert!(rendered.markdown.contains(r"\operatorname{loss}"));
@@ -21,7 +21,7 @@ fn renders_linear_model_example() {
 #[test]
 fn renders_electrodynamics_example() {
     let rendered = RenderEngine::default()
-        .render_path(&fixture("electrodynamics.py"))
+        .render_path(&fixture("electrodynamics/electrodynamics.py"))
         .unwrap();
     assert!(rendered
         .markdown
@@ -35,7 +35,7 @@ fn renders_electrodynamics_example() {
 #[test]
 fn renders_feature_showcase_example() {
     let rendered = RenderEngine::default()
-        .render_path(&fixture("feature_showcase.py"))
+        .render_path(&fixture("feature_showcase/feature_showcase.py"))
         .unwrap();
     assert!(rendered.markdown.contains("# MathDocs Feature Showcase"));
     assert!(rendered.markdown.contains(r"e^{rt}"));
@@ -47,11 +47,11 @@ fn renders_feature_showcase_example() {
 #[test]
 fn renders_generated_plot_example() {
     let rendered = RenderEngine::default()
-        .render_path(&fixture("generated_plot.py"))
+        .render_path(&fixture("generated_plot/generated_plot.py"))
         .unwrap();
     assert!(rendered.markdown.contains("# Generated Plot"));
     assert!(rendered.markdown.contains("![Training loss curve]("));
-    assert!(rendered.markdown.contains("artifacts/training_loss.svg)"));
+    assert!(rendered.markdown.contains("training_loss.svg)"));
     assert!(rendered
         .markdown
         .contains("_Loss decreases over eight training epochs._"));
@@ -63,7 +63,7 @@ fn renders_generated_plot_example() {
 #[test]
 fn merges_sidecar_metadata() {
     let rendered = RenderEngine::default()
-        .render_path(&fixture("sidecar_demo.py"))
+        .render_path(&fixture("sidecar_demo/sidecar_demo.py"))
         .unwrap();
     assert!(rendered.markdown.contains(r"\theta"));
     assert!(rendered.markdown.contains(r"\sigma"));

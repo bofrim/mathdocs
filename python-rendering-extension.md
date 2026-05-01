@@ -1001,9 +1001,9 @@ editors/
 The CLI is useful before the editor extension exists:
 
 ```bash
-mathdocs render examples/electrodynamics.py --format markdown
-mathdocs render examples/electrodynamics.py --range 20:1-28:1
-mathdocs symbols examples/electrodynamics.py
+mathdocs render examples/electrodynamics/electrodynamics.py --format markdown
+mathdocs render examples/electrodynamics/electrodynamics.py --range 20:1-28:1
+mathdocs symbols examples/electrodynamics/electrodynamics.py
 ```
 
 ### 13.2 Python package

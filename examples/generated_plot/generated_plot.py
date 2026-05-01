@@ -6,12 +6,10 @@ from pathlib import Path
 
 from mathdocs import render_figure
 
-OUTPUT_PATH = Path(__file__).with_name("artifacts") / "training_loss.svg"
+OUTPUT_PATH = Path(__file__).with_name("training_loss.svg")
 
 
 def build_loss_plot(path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-
     losses = [1.00, 0.72, 0.53, 0.40, 0.31, 0.25, 0.21, 0.18]
     width = 640
     height = 360
@@ -59,7 +57,7 @@ MathDocs directive to place that generated artifact in the rendered document.
 """
 
 render_figure(
-    "artifacts/training_loss.svg",
+    "training_loss.svg",
     alt="Training loss curve",
     caption="Loss decreases over eight training epochs.",
 )

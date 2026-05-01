@@ -84,8 +84,13 @@ nothing executes when MathDocs builds the document.
   output at a specific point. Useful when a script produces a plot beside the
   source it documents.
 
-More examples in [`examples/`](examples/) — `electrodynamics.py`,
-`feature_showcase.py`, `gpt_transformer.py`.
+More examples in [`examples/`](examples/) — each lives in its own directory
+with the Python source and a pre-rendered `<name>.md` (e.g.
+[`examples/electrodynamics/`](examples/electrodynamics/),
+[`examples/feature_showcase/`](examples/feature_showcase/),
+[`examples/gpt_transformer/`](examples/gpt_transformer/)). Run
+`bash scripts/render_examples.sh` to regenerate every committed Markdown
+output in place.
 
 ## CLI
 
@@ -105,4 +110,6 @@ artifacts (plots, tables) before the renderer reads it.
 - [`crates/`](crates/) — Rust workspace; `mathdocs_cli` is the renderer binary
   bundled into the wheel, `mathdocs_lsp` powers the editor extension
 - [`editors/vscode/`](editors/vscode/) — the VS Code extension source
-- [`examples/`](examples/) — example `.py` files used by the test suite
+- [`examples/`](examples/) — one directory per example holding the source,
+  any sidecar/artifact files, and a pre-rendered `.md`; also used by the test
+  suite

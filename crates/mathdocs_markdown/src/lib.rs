@@ -289,9 +289,7 @@ fn resolve_figure_src(src: &str, source_path: Option<&Path>) -> String {
     };
 
     let target = absolutize(source_dir.join(src));
-    std::env::current_dir()
-        .ok()
-        .and_then(|cwd| relative_path(&absolutize(cwd), &target))
+    relative_path(&absolutize(source_dir.to_path_buf()), &target)
         .unwrap_or(target)
         .to_string_lossy()
         .into_owned()
@@ -484,9 +482,7 @@ render_figure("plots/loss.png", alt="Loss curve")
             .join("report.py");
         let rendered =
             RenderEngine::default().render_source(Some(&path), &path.to_string_lossy(), source);
-        assert!(rendered
-            .markdown
-            .contains("![Loss curve](docs/plots/loss.png)"));
+        assert!(rendered.markdown.contains("![Loss curve](plots/loss.png)"));
     }
 
     #[test]
